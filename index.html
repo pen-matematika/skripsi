@@ -975,7 +975,7 @@
 
             var html = '<table class="table table-hover align-middle mb-0"><thead class="table-light"><tr><th>NIM</th><th>Nama Mahasiswa</th><th>Status Pembimbing</th></tr></thead><tbody>';
             myMhs.forEach(function(m) {
-                var status = (String(m.nidn_pembimbing_1).trim().toLowerCase() === myId) ? '<span class="badge bg-maroon">Pembimbing 1</span>' : '<span class="badge bg-secondary">Pembimbing 2</span>';
+                var status = (String(m.nidn_pembimbing_1).trim().toLowerCase().replace(/^0+/, '') === myId) ? '<span class="badge bg-maroon">Pembimbing 1</span>' : '<span class="badge bg-secondary">Pembimbing 2</span>';
                 html += '<tr><td><span class="fw-semibold">'+escapeHTML(m.nim)+'</span></td><td>'+escapeHTML(m.nama_mahasiswa)+'</td><td>'+status+'</td></tr>';
             });
             html += '</tbody></table>';
