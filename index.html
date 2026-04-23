@@ -282,7 +282,9 @@
                         <i class="fa-solid fa-filter text-maroon fa-2x me-3"></i>
                         <div class="flex-grow-1">
                             <label class="small fw-bold text-muted">Pilih Mahasiswa Bimbingan:</label>
-                            <select class="form-select form-select-sm shadow-none" id="filterMhsBimbingan" onchange="renderBimbinganDsn()"></select>
+                            <select class="form-select form-select-sm shadow-none" id="filterMhsBimbingan" onchange="renderBimbinganDsn()">
+                                <option value="ALL">-- Tampilkan Semua Mahasiswa Bimbingan --</option>
+                            </select>
                         </div>
                     </div>
                     <div id="bimbinganDsnContainer"></div>
@@ -992,11 +994,15 @@
             myMhs.forEach(function(m) {
                 sel.innerHTML += '<option value="'+escapeHTML(m.nim)+'">'+escapeHTML(m.nim)+' - '+escapeHTML(m.nama_mahasiswa)+'</option>';
             });
+            
+            // Pemicu: Segarkan tampilan jika data dropdown baru saja selesai disuntikkan
+            if (activePage === 'bimbingan-dsn') renderBimbinganDsn();
         }
 
         window.renderBimbinganDsn = function() {
             var c = document.getElementById('bimbinganDsnContainer');
             var filterVal = document.getElementById('filterMhsBimbingan') ? document.getElementById('filterMhsBimbingan').value : 'ALL';
+            if (!filterVal) filterVal = 'ALL'; // Pengaman: cegah nilai filter kosong
             
             var myId = String(currentUser.ref_id || currentUser.username).trim().toLowerCase();
             var list = dbBimbingan.filter(function(x) { return String(x.nidn_dosen).trim().toLowerCase() === myId; });
