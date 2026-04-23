@@ -417,7 +417,7 @@
 
        // === GITHUB PAGES CONFIG ===
         // Ganti URL ini dengan URL Web App Apps Script Anda yang baru
-        const GAS_URL = "https://script.google.com/macros/s/AKfycby-l9NmOiIdcwsrfdCPvVH95g2WP80_YFidoymFS6wiQRgPLltwKs5QrJosCCtQUIZeIA/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwoM2xP-08YSZ4ZOpUiXrjyPpTRf2_rm7609fxeKcsRrdvJXFtEa9HmC8g71fiMkWgrQg/exec";
 
         // Trik untuk membypass mode preview lokal agar selalu menggunakan API jarak jauh
         var google = { script: { run: { destroySession: function(token) { gasRun('destroySession', token); } } } };
@@ -724,15 +724,15 @@
             } else if (pageName === 'bimbingan-mhs') {
                 if(!isBimbinganLoaded) { showSectionLoading('bimbinganMhsContainer'); fetchBimbinganData(); }
                 else renderBimbinganMhs();
-                if(!isPlottingLoaded) fetchPlottingData(true); 
+                if(!isPlottingLoaded) fetchPlottingData(true); else updateSelectDosenMhs();
             } else if (pageName === 'mhs-bimbingan') {
                 if(!isPlottingLoaded) { showSectionLoading('mhsBimbinganContainer'); fetchPlottingData(); }
                 else renderMhsBimbinganList();
             } else if (pageName === 'bimbingan-dsn') {
                 if(!isBimbinganLoaded) { showSectionLoading('bimbinganDsnContainer'); fetchBimbinganData(); }
                 else renderBimbinganDsn();
-                if(!isPlottingLoaded) fetchPlottingData(true); 
-            } else if (pageName === 'admin-plotting') {
+                if(!isPlottingLoaded) fetchPlottingData(true); else updateSelectFilterMhsDsn();
+            }else if (pageName === 'admin-plotting') {
                 if(!isPlottingLoaded) { showSectionLoading('plottingContainer'); fetchPlottingData(); }
                 else renderPlottingAdmin();
             } else if (pageName === 'admin-users') {
@@ -963,9 +963,9 @@
         // DOSEN VIEWS
         function renderMhsBimbinganList() {
             var c = document.getElementById('mhsBimbinganContainer');
-            var myId = String(currentUser.ref_id || currentUser.username).trim().toLowerCase();
+            var myId = String(currentUser.ref_id || currentUser.username).trim().toLowerCase().replace(/^0+/, '');
             var myMhs = dbPlotting.filter(function(x) { 
-                return String(x.nidn_pembimbing_1).trim().toLowerCase() === myId || String(x.nidn_pembimbing_2).trim().toLowerCase() === myId; 
+                return String(x.nidn_pembimbing_1).trim().toLowerCase().replace(/^0+/, '') === myId || String(x.nidn_pembimbing_2).trim().toLowerCase().replace(/^0+/, '') === myId; 
             });
 
             if(myMhs.length === 0) {
@@ -985,9 +985,9 @@
         function updateSelectFilterMhsDsn() {
             var sel = document.getElementById('filterMhsBimbingan');
             if(!sel) return;
-            var myId = String(currentUser.ref_id || currentUser.username).trim().toLowerCase();
+            var myId = String(currentUser.ref_id || currentUser.username).trim().toLowerCase().replace(/^0+/, '');
             var myMhs = dbPlotting.filter(function(x) { 
-                return String(x.nidn_pembimbing_1).trim().toLowerCase() === myId || String(x.nidn_pembimbing_2).trim().toLowerCase() === myId; 
+                return String(x.nidn_pembimbing_1).trim().toLowerCase().replace(/^0+/, '') === myId || String(x.nidn_pembimbing_2).trim().toLowerCase().replace(/^0+/, '') === myId; 
             });
             
             sel.innerHTML = '<option value="ALL">-- Tampilkan Semua Mahasiswa Bimbingan --</option>';
@@ -1004,11 +1004,11 @@
             var filterVal = document.getElementById('filterMhsBimbingan') ? document.getElementById('filterMhsBimbingan').value : 'ALL';
             if (!filterVal) filterVal = 'ALL'; // Pengaman: cegah nilai filter kosong
             
-            var myId = String(currentUser.ref_id || currentUser.username).trim().toLowerCase();
-            var list = dbBimbingan.filter(function(x) { return String(x.nidn_dosen).trim().toLowerCase() === myId; });
+            var myId = String(currentUser.ref_id || currentUser.username).trim().toLowerCase().replace(/^0+/, '');
+            var list = dbBimbingan.filter(function(x) { return String(x.nidn_dosen).trim().toLowerCase().replace(/^0+/, '') === myId; });
             
             if (filterVal !== 'ALL') {
-                list = list.filter(function(x) { return String(x.nim).trim().toLowerCase() === String(filterVal).trim().toLowerCase(); });
+                list = list.filter(function(x) { return String(x.nim).trim().toLowerCase().replace(/^0+/, '') === String(filterVal).trim().toLowerCase().replace(/^0+/, ''); });
             }
 
             if (list.length === 0) {
